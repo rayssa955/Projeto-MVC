@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+            AAPM PDV
+        {% endblock %}
+    </title>
+
+    <!-- GOOGLE FONTS -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body{
+            background:
+            linear-gradient(to bottom right, #f4f7fb, #eef2ff);
+
+            color: #1e293b;
+
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+
+        .navbar{
+
+            background: #25379b;
+
+            height: 72px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 30px;
+
+            box-shadow:
+            0 4px 18px rgba(0,0,0,0.08);
+
+        }
+
+        .nav-esquerda{
+            display: flex;
+            align-items: center;
+            gap: 26px;
+        }
+
+        .logo{
+            color: white;
+
+            font-size: 28px;
+
+            font-weight: 700;
+
+            margin-right: 20px;
+        }
+
+        .menu{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu a{
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 12px 16px;
+
+            border-radius: 12px;
+
+            transition: 0.2s ease;
+
+            font-weight: 500;
+
+            opacity: 0.9;
+
+        }
+
+        .menu a:hover{
+            background: rgba(255,255,255,0.12);
+            opacity: 1;
+        }
+
+        .menu .ativo{
+            background: white;
+            color: #25379b;
+            opacity: 1;
+            font-weight: 600;
+        }
+
+        .usuario-topo{
+            color: white;
+            font-weight: 500;
+        }
+
+        /* CONTEÚDO */
+
+        .conteudo{
+            padding: 40px;
+        }
+
+        .container{
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* RESPONSIVO */
+
+        @media (max-width: 900px){
+
+            .navbar{
+                height: auto;
+                padding: 20px;
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+
+            .nav-esquerda{
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .menu{
+                flex-wrap: wrap;
+            }
+
+            .conteudo{
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+    {% block extra_css %}
+    {% endblock %}
+
+</head>
+<body>
+
+<!-- NAVBAR -->
+
+<header class="navbar">
+
+    <div class="nav-esquerda">
+
+        <div class="logo">
+            AAPM PDV
+        </div>
+
+        <nav class="menu">
+
+            <a href="#">
+                PDV
+            </a>
+
+            <a href="#">
+                Histórico
+            </a>
+
+            <a href="#">
+                Produtos
+            </a>
+
+            <a href="#">
+                Armários
+            </a>
+
+            <a href="#">
+                Painel
+            </a>
+
+            <!-- NOVA ABA -->
+
+            <a href="/usuarios"
+               class="ativo">
+
+                Usuários
+
+            </a>
+
+        </nav>
+
+    </div>
+
+    <div class="usuario-topo">
+        Administrador
+    </div>
+
+</header>
+
+<!-- CONTEÚDO -->
+
+<main class="conteudo">
+
+    <div class="container">
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</main>
+
+{% block extra_js %}
+{% endblock %}
+
+</body>
+</html>

@@ -1,588 +1,365 @@
-<!-- templates/usuarios/index -->
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
+{% extends "base.html" %}
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+{% block title %}
+    Usuários — Estoque
+{% endblock %}
 
-    <title>Usuários — Estoque</title>
+{% block extra_css %}
 
-    <!-- GOOGLE FONTS -->
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
+<style>
 
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
+    .topo{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet">
+        margin-bottom: 30px;
 
-    <style>
+        flex-wrap: wrap;
+        gap: 20px;
+    }
 
-        *{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+    .titulo h1{
+        font-size: 34px;
+        margin-bottom: 8px;
+        color: #0f172a;
+    }
 
-        body{
-            background:
-            linear-gradient(to bottom right, #f4f7fb, #eef2ff);
+    .titulo p{
+        color: #64748b;
+        font-size: 15px;
+    }
 
-            color: #1e293b;
+    .btn-novo{
+        background: #2563eb;
+        color: white;
 
-            padding: 40px;
+        text-decoration: none;
 
-            min-height: 100vh;
-        }
+        padding: 14px 22px;
 
-        .container{
-            max-width: 1200px;
-            margin: 0 auto;
+        border-radius: 12px;
 
-            animation: fadeIn 0.5s ease;
-        }
+        font-weight: 600;
 
-        .topo{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        transition: all 0.2s ease;
+    }
 
-            margin-bottom: 30px;
+    .btn-novo:hover{
+        background: #1d4ed8;
+    }
 
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+    .card{
+        background: white;
 
-        .titulo h1{
-            font-size: 34px;
-            margin-bottom: 8px;
-            color: #0f172a;
-        }
+        border-radius: 20px;
 
-        .titulo p{
-            color: #64748b;
-            font-size: 15px;
-        }
+        padding: 24px;
 
-        .btn-novo{
-            background: #2563eb;
-            color: white;
+        box-shadow:
+        0 10px 35px rgba(0,0,0,0.06);
+    }
 
-            text-decoration: none;
+    .barra-topo{
+        margin-bottom: 24px;
+    }
 
-            padding: 14px 22px;
+    .campo-busca input{
+        width: 100%;
+        max-width: 320px;
 
-            border-radius: 12px;
+        padding: 14px 16px;
 
-            font-weight: 600;
+        border-radius: 12px;
 
-            transition: all 0.2s ease;
+        border: 1px solid #dbe2ea;
 
-            box-shadow:
-            0 4px 14px rgba(37, 99, 235, 0.2);
-        }
+        background: #f8fafc;
+    }
 
-        .btn-novo:hover{
-            background: #1d4ed8;
-            transform: translateY(-1px);
-        }
+    table{
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-        .card{
-            background: white;
+    th, td{
+        padding: 18px;
+        text-align: left;
+    }
 
-            border-radius: 20px;
+    thead{
+        background: #f8fafc;
+    }
 
-            padding: 24px;
+    tbody tr{
+        border-bottom: 1px solid #f1f5f9;
+    }
 
-            box-shadow:
-            0 10px 35px rgba(0,0,0,0.06);
+    .usuario-info{
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
 
-            overflow-x: auto;
+    .avatar{
+        width: 38px;
+        height: 38px;
 
-            transition: 0.25s ease;
-        }
+        border-radius: 50%;
 
-        .card:hover{
-            transform: translateY(-2px);
+        background:
+        linear-gradient(135deg, #2563eb, #4f46e5);
 
-            box-shadow:
-            0 12px 40px rgba(0,0,0,0.08);
-        }
+        color: white;
 
-        /* BARRA DE BUSCA */
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        .barra-topo{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        font-weight: 700;
+    }
 
-            margin-bottom: 24px;
-        }
+    .badge{
+        padding: 6px 12px;
 
-        .campo-busca{
-            width: 100%;
-            max-width: 320px;
-        }
+        border-radius: 999px;
 
-        .campo-busca input{
-            width: 100%;
+        font-size: 12px;
 
-            padding: 14px 16px;
+        font-weight: 600;
+    }
 
-            border-radius: 12px;
+    .ativo{
+        background: #dcfce7;
+        color: #166534;
+    }
 
-            border: 1px solid #dbe2ea;
+    .inativo{
+        background: #fee2e2;
+        color: #991b1b;
+    }
 
-            background: #f8fafc;
+    .acoes{
+        display: flex;
+        gap: 10px;
+    }
 
-            font-size: 14px;
+    .btn-editar{
+        text-decoration: none;
 
-            transition: all 0.2s ease;
-        }
+        background: #eff6ff;
+        color: #2563eb;
 
-        .campo-busca input:focus{
-            outline: none;
+        padding: 10px 14px;
 
-            border-color: #2563eb;
+        border-radius: 10px;
 
-            background: white;
+        font-size: 13px;
 
-            box-shadow:
-            0 0 0 4px rgba(37, 99, 235, 0.12);
-        }
+        font-weight: 600;
+    }
 
-        table{
-            width: 100%;
-            border-collapse: collapse;
-        }
+    .btn-toggle{
+        border: none;
 
-        thead{
-            background: #f8fafc;
-        }
+        padding: 10px 14px;
 
-        th{
-            text-align: left;
+        border-radius: 10px;
 
-            padding: 18px;
+        cursor: pointer;
 
-            font-size: 14px;
+        font-weight: 600;
+    }
 
-            color: #475569;
+    .btn-desativar{
+        background: #fee2e2;
+        color: #991b1b;
+    }
 
-            border-bottom: 1px solid #e2e8f0;
+    .btn-ativar{
+        background: #dcfce7;
+        color: #166534;
+    }
 
-            font-weight: 600;
-        }
+    .mensagem{
+        padding: 14px 18px;
 
-        td{
-            padding: 18px;
+        border-radius: 12px;
 
-            border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 20px;
 
-            font-size: 14px;
-        }
+        font-weight: 600;
+    }
 
-        tbody tr{
-            transition: 0.2s ease;
-        }
+    .sucesso{
+        background: #dcfce7;
+        color: #166534;
+    }
 
-        tbody tr:hover{
-            background: #f8fafc;
-            transform: scale(1.003);
-        }
+    .erro{
+        background: #fee2e2;
+        color: #991b1b;
+    }
 
-        /* AVATAR */
+</style>
 
-        .usuario-info{
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+{% endblock %}
 
-        .avatar{
-            width: 38px;
-            height: 38px;
+{% block content %}
 
-            border-radius: 50%;
+<div class="topo">
 
-            background:
-            linear-gradient(135deg, #2563eb, #4f46e5);
+    <div class="titulo">
 
-            color: white;
+        <h1>Usuários</h1>
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            font-size: 14px;
-            font-weight: 700;
-
-            flex-shrink: 0;
-
-            box-shadow:
-            0 4px 10px rgba(37, 99, 235, 0.25);
-        }
-
-        .nome-usuario{
-            font-weight: 600;
-            color: #0f172a;
-        }
-
-        .badge{
-            padding: 6px 12px;
-
-            border-radius: 999px;
-
-            font-size: 12px;
-
-            font-weight: 600;
-
-            display: inline-block;
-        }
-
-        .ativo{
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .inativo{
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .acoes{
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .btn-editar{
-            text-decoration: none;
-
-            background: #eff6ff;
-            color: #2563eb;
-
-            padding: 10px 14px;
-
-            border-radius: 10px;
-
-            font-size: 13px;
-            font-weight: 600;
-
-            transition: all 0.2s ease;
-        }
-
-        .btn-editar:hover{
-            background: #dbeafe;
-            transform: translateY(-1px);
-        }
-
-        .btn-toggle{
-            border: none;
-
-            padding: 10px 14px;
-
-            border-radius: 10px;
-
-            font-size: 13px;
-            font-weight: 600;
-
-            cursor: pointer;
-
-            transition: all 0.2s ease;
-        }
-
-        .btn-toggle:hover{
-            transform: translateY(-1px);
-        }
-
-        .btn-desativar{
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .btn-desativar:hover{
-            background: #fecaca;
-        }
-
-        .btn-ativar{
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .btn-ativar:hover{
-            background: #bbf7d0;
-        }
-
-        .mensagem{
-            padding: 14px 18px;
-
-            border-radius: 12px;
-
-            margin-bottom: 20px;
-
-            font-weight: 600;
-
-            animation: fadeIn 0.4s ease;
-        }
-
-        .sucesso{
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .erro{
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .voltar{
-            display: inline-block;
-
-            margin-top: 24px;
-
-            text-decoration: none;
-
-            color: #475569;
-
-            font-weight: 600;
-
-            transition: 0.2s;
-        }
-
-        .voltar:hover{
-            color: #2563eb;
-        }
-
-        /* ANIMAÇÕES */
-
-        @keyframes fadeIn{
-
-            from{
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to{
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-        }
-
-        @media (max-width: 768px){
-
-            body{
-                padding: 20px;
-            }
-
-            .topo{
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            table{
-                min-width: 700px;
-            }
-
-            .campo-busca{
-                max-width: 100%;
-            }
-
-        }
-
-    </style>
-
-</head>
-<body>
-
-<div class="container">
-
-    <div class="topo">
-
-        <div class="titulo">
-
-            <h1>Usuários</h1>
-
-            <p>
-                Gerencie os usuários cadastrados no sistema
-            </p>
-
-        </div>
-
-        <a href="/usuarios/novo"
-           class="btn-novo">
-
-            + Novo usuário
-
-        </a>
+        <p>
+            Gerencie os usuários cadastrados no sistema
+        </p>
 
     </div>
 
-    <!-- MENSAGENS -->
+    <a href="/usuarios/novo"
+       class="btn-novo">
 
-    {% if request.query_params.get('criado') == 'ok' %}
-        <div class="mensagem sucesso">
-            Usuário criado com sucesso!
-        </div>
-    {% endif %}
-
-    {% if request.query_params.get('editado') == 'ok' %}
-        <div class="mensagem sucesso">
-            Usuário atualizado com sucesso!
-        </div>
-    {% endif %}
-
-    {% if request.query_params.get('erro') == 'autoproprio' %}
-        <div class="mensagem erro">
-            Você não pode desativar sua própria conta.
-        </div>
-    {% endif %}
-
-    <!-- CARD -->
-
-    <div class="card">
-
-        <!-- BARRA DE BUSCA -->
-
-        <div class="barra-topo">
-
-            <div class="campo-busca">
-
-                <input type="text"
-                       id="buscarUsuario"
-                       placeholder="Buscar usuário...">
-
-            </div>
-
-        </div>
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>Usuário</th>
-                    <th>E-mail</th>
-                    <th>Perfil</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for u in usuarios %}
-
-                <tr class="linha-usuario">
-
-                    <!-- USUÁRIO -->
-
-                    <td>
-
-                        <div class="usuario-info">
-
-                            <div class="avatar">
-                                {{ u.nome[0].upper() }}
-                            </div>
-
-                            <span class="nome-usuario">
-                                {{ u.nome }}
-                            </span>
-
-                        </div>
-
-                    </td>
-
-                    <!-- EMAIL -->
-
-                    <td>
-                        {{ u.email }}
-                    </td>
-
-                    <!-- PERFIL -->
-
-                    <td>
-                        {{ u.role }}
-                    </td>
-
-                    <!-- STATUS -->
-
-                    <td>
-
-                        {% if u.ativo %}
-
-                            <span class="badge ativo">
-                                Ativo
-                            </span>
-
-                        {% else %}
-
-                            <span class="badge inativo">
-                                Inativo
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-                    <!-- AÇÕES -->
-
-                    <td>
-
-                        <div class="acoes">
-
-                            <a href="/usuarios/{{ u.id }}/editar"
-                               class="btn-editar">
-
-                                Editar
-
-                            </a>
-
-                            <form action="/usuarios/{{ u.id }}/toggle-ativo"
-                                  method="post">
-
-                                <button
-                                    type="submit"
-
-                                    class="btn-toggle {% if u.ativo %}btn-desativar{% else %}btn-ativar{% endif %}">
-
-                                    {{ "Desativar" if u.ativo else "Ativar" }}
-
-                                </button>
-
-                            </form>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-    <a href="/"
-       class="voltar">
-
-        ← Voltar ao home
+        + Novo usuário
 
     </a>
 
 </div>
 
-<!-- SCRIPT DA BUSCA -->
+{% if request.query_params.get('criado') == 'ok' %}
+    <div class="mensagem sucesso">
+        Usuário criado com sucesso!
+    </div>
+{% endif %}
+
+{% if request.query_params.get('editado') == 'ok' %}
+    <div class="mensagem sucesso">
+        Usuário atualizado com sucesso!
+    </div>
+{% endif %}
+
+{% if request.query_params.get('erro') == 'autoproprio' %}
+    <div class="mensagem erro">
+        Você não pode desativar sua própria conta.
+    </div>
+{% endif %}
+
+<div class="card">
+
+    <div class="barra-topo">
+
+        <div class="campo-busca">
+
+            <input type="text"
+                   id="buscarUsuario"
+                   placeholder="Buscar usuário...">
+
+        </div>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>Usuário</th>
+                <th>E-mail</th>
+                <th>Perfil</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for u in usuarios %}
+
+            <tr class="linha-usuario">
+
+                <td>
+
+                    <div class="usuario-info">
+
+                        <div class="avatar">
+                            {{ u.nome[0].upper() }}
+                        </div>
+
+                        <span>
+                            {{ u.nome }}
+                        </span>
+
+                    </div>
+
+                </td>
+
+                <td>
+                    {{ u.email }}
+                </td>
+
+                <td>
+                    {{ u.role }}
+                </td>
+
+                <td>
+
+                    {% if u.ativo %}
+                        <span class="badge ativo">
+                            Ativo
+                        </span>
+                    {% else %}
+                        <span class="badge inativo">
+                            Inativo
+                        </span>
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <div class="acoes">
+
+                        <a href="/usuarios/{{ u.id }}/editar"
+                           class="btn-editar">
+
+                            Editar
+
+                        </a>
+
+                        <form action="/usuarios/{{ u.id }}/toggle-ativo"
+                              method="post">
+
+                            <button
+                                type="submit"
+
+                                class="btn-toggle {% if u.ativo %}btn-desativar{% else %}btn-ativar{% endif %}">
+
+                                {{ "Desativar" if u.ativo else "Ativar" }}
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
 
 <script>
 
@@ -613,5 +390,4 @@
 
 </script>
 
-</body>
-</html>
+{% endblock %}
