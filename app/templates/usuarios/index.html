@@ -1,84 +1,617 @@
-<!-- templates/usuarios/form.html -->
-
+<!-- templates/usuarios/index -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <!--
-        editando é None na criação e o objeto Usuario na edição.
-        O template usa isso para adaptar título, action e campos.
-    -->
-    <title>{{ "Editar" if editando else "Novo" }} Usuário — Estoque</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Usuários — Estoque</title>
+
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body{
+            background:
+            linear-gradient(to bottom right, #f4f7fb, #eef2ff);
+
+            color: #1e293b;
+
+            padding: 40px;
+
+            min-height: 100vh;
+        }
+
+        .container{
+            max-width: 1200px;
+            margin: 0 auto;
+
+            animation: fadeIn 0.5s ease;
+        }
+
+        .topo{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 30px;
+
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .titulo h1{
+            font-size: 34px;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+
+        .titulo p{
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .btn-novo{
+            background: #2563eb;
+            color: white;
+
+            text-decoration: none;
+
+            padding: 14px 22px;
+
+            border-radius: 12px;
+
+            font-weight: 600;
+
+            transition: all 0.2s ease;
+
+            box-shadow:
+            0 4px 14px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-novo:hover{
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .card{
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 24px;
+
+            box-shadow:
+            0 10px 35px rgba(0,0,0,0.06);
+
+            overflow-x: auto;
+
+            transition: 0.25s ease;
+        }
+
+        .card:hover{
+            transform: translateY(-2px);
+
+            box-shadow:
+            0 12px 40px rgba(0,0,0,0.08);
+        }
+
+        /* BARRA DE BUSCA */
+
+        .barra-topo{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 24px;
+        }
+
+        .campo-busca{
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .campo-busca input{
+            width: 100%;
+
+            padding: 14px 16px;
+
+            border-radius: 12px;
+
+            border: 1px solid #dbe2ea;
+
+            background: #f8fafc;
+
+            font-size: 14px;
+
+            transition: all 0.2s ease;
+        }
+
+        .campo-busca input:focus{
+            outline: none;
+
+            border-color: #2563eb;
+
+            background: white;
+
+            box-shadow:
+            0 0 0 4px rgba(37, 99, 235, 0.12);
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead{
+            background: #f8fafc;
+        }
+
+        th{
+            text-align: left;
+
+            padding: 18px;
+
+            font-size: 14px;
+
+            color: #475569;
+
+            border-bottom: 1px solid #e2e8f0;
+
+            font-weight: 600;
+        }
+
+        td{
+            padding: 18px;
+
+            border-bottom: 1px solid #f1f5f9;
+
+            font-size: 14px;
+        }
+
+        tbody tr{
+            transition: 0.2s ease;
+        }
+
+        tbody tr:hover{
+            background: #f8fafc;
+            transform: scale(1.003);
+        }
+
+        /* AVATAR */
+
+        .usuario-info{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar{
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            background:
+            linear-gradient(135deg, #2563eb, #4f46e5);
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            flex-shrink: 0;
+
+            box-shadow:
+            0 4px 10px rgba(37, 99, 235, 0.25);
+        }
+
+        .nome-usuario{
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .badge{
+            padding: 6px 12px;
+
+            border-radius: 999px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            display: inline-block;
+        }
+
+        .ativo{
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .inativo{
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .acoes{
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-editar{
+            text-decoration: none;
+
+            background: #eff6ff;
+            color: #2563eb;
+
+            padding: 10px 14px;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            transition: all 0.2s ease;
+        }
+
+        .btn-editar:hover{
+            background: #dbeafe;
+            transform: translateY(-1px);
+        }
+
+        .btn-toggle{
+            border: none;
+
+            padding: 10px 14px;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: all 0.2s ease;
+        }
+
+        .btn-toggle:hover{
+            transform: translateY(-1px);
+        }
+
+        .btn-desativar{
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-desativar:hover{
+            background: #fecaca;
+        }
+
+        .btn-ativar{
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .btn-ativar:hover{
+            background: #bbf7d0;
+        }
+
+        .mensagem{
+            padding: 14px 18px;
+
+            border-radius: 12px;
+
+            margin-bottom: 20px;
+
+            font-weight: 600;
+
+            animation: fadeIn 0.4s ease;
+        }
+
+        .sucesso{
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .erro{
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .voltar{
+            display: inline-block;
+
+            margin-top: 24px;
+
+            text-decoration: none;
+
+            color: #475569;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .voltar:hover{
+            color: #2563eb;
+        }
+
+        /* ANIMAÇÕES */
+
+        @keyframes fadeIn{
+
+            from{
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to{
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        @media (max-width: 768px){
+
+            body{
+                padding: 20px;
+            }
+
+            .topo{
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            table{
+                min-width: 700px;
+            }
+
+            .campo-busca{
+                max-width: 100%;
+            }
+
+        }
+
+    </style>
+
 </head>
 <body>
-    <h1>{{ "Editar usuário" if editando else "Novo usuário" }}</h1>
 
-    {% if erro %}
-        <p style="color: red;">{{ erro }}</p>
+<div class="container">
+
+    <div class="topo">
+
+        <div class="titulo">
+
+            <h1>Usuários</h1>
+
+            <p>
+                Gerencie os usuários cadastrados no sistema
+            </p>
+
+        </div>
+
+        <a href="/usuarios/novo"
+           class="btn-novo">
+
+            + Novo usuário
+
+        </a>
+
+    </div>
+
+    <!-- MENSAGENS -->
+
+    {% if request.query_params.get('criado') == 'ok' %}
+        <div class="mensagem sucesso">
+            Usuário criado com sucesso!
+        </div>
     {% endif %}
 
-    <!--
-        action muda dinamicamente:
-        - criação → POST /usuarios/novo
-        - edição  → POST /usuarios/{id}/editar
-    -->
-    <form action="{{ '/usuarios/' + editando.id|string + '/editar' if editando else '/usuarios/novo' }}"
-          method="post">
+    {% if request.query_params.get('editado') == 'ok' %}
+        <div class="mensagem sucesso">
+            Usuário atualizado com sucesso!
+        </div>
+    {% endif %}
 
-        <label>Nome:
-            <!--
-                value recupera do objeto na edição,
-                ou do dicionário "valores" se houve erro na criação
-            -->
-            <input type="text"
-                   name="nome"
-                   value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
-                   required>
-        </label>
-        <br>
+    {% if request.query_params.get('erro') == 'autoproprio' %}
+        <div class="mensagem erro">
+            Você não pode desativar sua própria conta.
+        </div>
+    {% endif %}
 
-        <label>E-mail:
-            <input type="email"
-                   name="email"
-                   value="{{ editando.email if editando else (valores.email if valores else '') }}"
-                   required>
-        </label>
-        <br>
+    <!-- CARD -->
 
-        <label>Senha:
-            <!--
-                Na edição o campo é opcional — deixar vazio mantém a senha atual.
-                Na criação é obrigatório.
-            -->
-            <input type="password"
-                   name="senha"
-                   {{ "placeholder='Deixe vazio para não alterar'" if editando else "required minlength='6'" }}>
-        </label>
-        <br>
+    <div class="card">
 
-        <label>Perfil de acesso:
-            <select name="role">
-                <!--
-                    selected é definido comparando com o valor atual.
-                    Na criação usa "valores.role" se voltou com erro,
-                    senão deixa "operador" como padrão.
-                -->
-                <option value="operador"
-                    {{ 'selected' if (editando and editando.role == 'operador') or (valores and valores.role == 'operador') else '' }}>
-                    Operador
-                </option>
-                <option value="admin"
-                    {{ 'selected' if (editando and editando.role == 'admin') or (valores and valores.role == 'admin') else '' }}>
-                    Administrador
-                </option>
-            </select>
-        </label>
-        <br>
+        <!-- BARRA DE BUSCA -->
 
-        <button type="submit">
-            {{ "Salvar alterações" if editando else "Criar usuário" }}
-        </button>
-        <a href="/usuarios">Cancelar</a>
-    </form>
+        <div class="barra-topo">
+
+            <div class="campo-busca">
+
+                <input type="text"
+                       id="buscarUsuario"
+                       placeholder="Buscar usuário...">
+
+            </div>
+
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Usuário</th>
+                    <th>E-mail</th>
+                    <th>Perfil</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for u in usuarios %}
+
+                <tr class="linha-usuario">
+
+                    <!-- USUÁRIO -->
+
+                    <td>
+
+                        <div class="usuario-info">
+
+                            <div class="avatar">
+                                {{ u.nome[0].upper() }}
+                            </div>
+
+                            <span class="nome-usuario">
+                                {{ u.nome }}
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                    <!-- EMAIL -->
+
+                    <td>
+                        {{ u.email }}
+                    </td>
+
+                    <!-- PERFIL -->
+
+                    <td>
+                        {{ u.role }}
+                    </td>
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        {% if u.ativo %}
+
+                            <span class="badge ativo">
+                                Ativo
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge inativo">
+                                Inativo
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- AÇÕES -->
+
+                    <td>
+
+                        <div class="acoes">
+
+                            <a href="/usuarios/{{ u.id }}/editar"
+                               class="btn-editar">
+
+                                Editar
+
+                            </a>
+
+                            <form action="/usuarios/{{ u.id }}/toggle-ativo"
+                                  method="post">
+
+                                <button
+                                    type="submit"
+
+                                    class="btn-toggle {% if u.ativo %}btn-desativar{% else %}btn-ativar{% endif %}">
+
+                                    {{ "Desativar" if u.ativo else "Ativar" }}
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <a href="/"
+       class="voltar">
+
+        ← Voltar ao home
+
+    </a>
+
+</div>
+
+<!-- SCRIPT DA BUSCA -->
+
+<script>
+
+    const campoBusca =
+        document.getElementById('buscarUsuario');
+
+    const linhas =
+        document.querySelectorAll('.linha-usuario');
+
+    campoBusca.addEventListener('keyup', () => {
+
+        const termo =
+            campoBusca.value.toLowerCase();
+
+        linhas.forEach(linha => {
+
+            const texto =
+                linha.innerText.toLowerCase();
+
+            linha.style.display =
+                texto.includes(termo)
+                ? ''
+                : 'none';
+
+        });
+
+    });
+
+</script>
+
 </body>
 </html>

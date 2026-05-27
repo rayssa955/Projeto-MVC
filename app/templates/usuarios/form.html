@@ -1,0 +1,375 @@
+<!-- templates/usuarios/form.html -->
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {{ "Editar" if editando else "Novo" }} Usuário — Estoque
+    </title>
+
+    <!-- FONTE -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body{
+            background:
+            linear-gradient(to bottom right, #f4f7fb, #eef2ff);
+
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 30px;
+        }
+
+        .container{
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .card{
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.06);
+
+            animation: aparecer 0.5s ease;
+            transition: 0.25s ease;
+        }
+
+        .card:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+        }
+
+        .topo{
+            margin-bottom: 30px;
+        }
+
+        .topo h1{
+            font-size: 32px;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .topo p{
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .erro{
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            animation: aparecer 0.4s ease;
+        }
+
+        form{
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .campo{
+            display: flex;
+            flex-direction: column;
+        }
+
+        label{
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        input,
+        select{
+            width: 100%;
+            padding: 14px;
+
+            border: 1px solid #dbe2ea;
+
+            border-radius: 12px;
+
+            font-size: 15px;
+
+            transition: all 0.2s ease;
+
+            background: white;
+        }
+
+        input:focus,
+        select:focus{
+            outline: none;
+            border-color: #2563eb;
+
+            box-shadow:
+            0 0 0 4px rgba(37, 99, 235, 0.12);
+
+            transform: scale(1.01);
+        }
+
+        .senha-info{
+            margin-top: 8px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .acoes{
+            display: flex;
+            gap: 14px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-salvar{
+            background: #2563eb;
+            color: white;
+
+            border: none;
+
+            padding: 14px 24px;
+
+            border-radius: 12px;
+
+            font-size: 15px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: all 0.2s ease;
+
+            box-shadow:
+            0 4px 14px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-salvar:hover{
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .btn-cancelar{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 14px 24px;
+
+            border-radius: 12px;
+
+            text-decoration: none;
+
+            background: #f1f5f9;
+            color: #334155;
+
+            font-weight: 600;
+
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancelar:hover{
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        /* ANIMAÇÃO */
+
+        @keyframes aparecer{
+
+            from{
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to{
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        @media (max-width: 600px){
+
+            .card{
+                padding: 28px;
+            }
+
+            .topo h1{
+                font-size: 26px;
+            }
+
+            .acoes{
+                flex-direction: column;
+            }
+
+            .btn-salvar,
+            .btn-cancelar{
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="topo">
+
+            <h1>
+                {{ "Editar usuário" if editando else "Novo usuário" }}
+            </h1>
+
+            <p>
+                {{ "Atualize as informações do usuário" if editando else "Preencha os dados para cadastrar um novo usuário" }}
+            </p>
+
+        </div>
+
+        {% if erro %}
+            <div class="erro">
+                {{ erro }}
+            </div>
+        {% endif %}
+
+        <form action="{{ '/usuarios/' + editando.id|string + '/editar' if editando else '/usuarios/novo' }}"
+              method="post">
+
+            <div class="campo">
+
+                <label for="nome">
+                    Nome
+                </label>
+
+                <input type="text"
+                       id="nome"
+                       name="nome"
+
+                       value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
+
+                       required>
+
+            </div>
+
+            <div class="campo">
+
+                <label for="email">
+                    E-mail
+                </label>
+
+                <input type="email"
+                       id="email"
+                       name="email"
+
+                       value="{{ editando.email if editando else (valores.email if valores else '') }}"
+
+                       required>
+
+            </div>
+
+            <div class="campo">
+
+                <label for="senha">
+                    Senha
+                </label>
+
+                <input type="password"
+                       id="senha"
+                       name="senha"
+
+                       {{ "placeholder='Deixe vazio para manter a senha atual'" if editando else "required minlength='6'" }}>
+
+                {% if editando %}
+                    <span class="senha-info">
+                        Deixe em branco caso não queira alterar a senha atual.
+                    </span>
+                {% endif %}
+
+            </div>
+
+            <div class="campo">
+
+                <label for="role">
+                    Perfil de acesso
+                </label>
+
+                <select name="role"
+                        id="role">
+
+                    <option value="operador"
+
+                        {{ 'selected' if (editando and editando.role == 'operador') or (valores and valores.role == 'operador') else '' }}>
+
+                        Operador
+
+                    </option>
+
+                    <option value="admin"
+
+                        {{ 'selected' if (editando and editando.role == 'admin') or (valores and valores.role == 'admin') else '' }}>
+
+                        Administrador
+
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="acoes">
+
+                <button type="submit"
+                        class="btn-salvar">
+
+                    {{ "Salvar alterações" if editando else "Criar usuário" }}
+
+                </button>
+
+                <a href="/usuarios"
+                   class="btn-cancelar">
+
+                    Cancelar
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

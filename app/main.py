@@ -8,6 +8,8 @@ from app.auth import get_usuario_opcional
 from app.controllers import auth_controller
 from app.controllers import usuario_controller
 
+
+
 app = FastAPI(title="Sistema de Ponto de venda")
 
 #Configurar a pasta para servir os arquivos estáticos (CSS, JS e IMG)
