@@ -241,4 +241,4 @@ def toggle_ativo(
     usuario.ativo = not usuario.ativo
     db.commit()
 
-    return RedirectResponse(url="/usuarios", status_code=302)
+    return RedirectResponse(url="/usuarios", status_code=302) 
